@@ -1,52 +1,44 @@
 version: 2
 
 jobs:
-  check:
+  build:
     docker:
     - image: circleci/node:10.11.0
     steps:
-    - run: git clone https://github.com/pokeapi/deploy --depth=1
-    - run: yarn --cwd deploy/functions
-    - run: yarn --cwd deploy/functions run lint
-    - run: yarn --cwd deploy/functions run build
+    - checkout
+    - run: yarn --cwd functions install
+    - run: yarn --cwd functions run lint
+    - run: yarn --cwd functions run build
 
-  ditto-transform:
-    docker:
-    - image: circleci/python:3.6.5
-    steps:
-    - run: git clone https://github.com/pokeapi/api-data --depth=1
-    - run: pip install --user -r api-data/requirements.txt
-    - run: mkdir -p workspace
-    - run:
-        command: |
-          ~/.local/bin/ditto transform \
-            --base-url='https://pokeapi-215911.firebaseapp.com' \
-            --src-dir=api-data/data \
-            --dest-dir=workspace/_gen
-    - persist_to_workspace:
-        root: workspace
-        paths:
-        - _gen
-
-  firebase-deploy:
+  test:
     docker:
     - image: circleci/node:10.11.0
     steps:
-    - run: git clone https://github.com/pokeapi/deploy --depth=1
+    - checkout
     - run: yarn --cwd deploy/functions
-    - attach_workspace:
-        at: workspace
-    - run: mkdir -p deploy/public && cp -r workspace/_gen deploy/public/_gen
-    - run: cd deploy && echo TODO actually deploy it
+    # TODO: write some tests and run them here
+
+  deploy:
+    docker:
+    - image: circleci/node:10.11.0
+    steps:
+    - checkout
+    - run: wget $(curl -s 'https://circleci.com/api/v1.1/project/github/PokeAPI/api-data/latest/artifacts?branch=master' | jq -r .[0].url)
+    - run: mkdir -p public && tar xzf _gen.tar.gz -C public
+    - run: yarn --cwd functions install
+    # TODO: deploy to firebase for real
 
 workflows:
   version: 2
-  deploy:
+  flow:
     jobs:
-    - ditto-transform
-    - firebase-deploy:
+    - build
+    - test:
         requires:
-        - ditto-transform
+        - build
+    - deploy:
+        requires:
+        - test
         filters:
           branches:
             only: master
