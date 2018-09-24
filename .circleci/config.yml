@@ -36,7 +36,7 @@ jobs:
     - run: yarn --cwd deploy/functions
     - attach_workspace:
         at: workspace
-    - run: cp -r workspace/_gen deploy/public/_gen
+    - run: mkdir -p deploy/public && cp -r workspace/_gen deploy/public/_gen
     - run: cd deploy && echo TODO actually deploy it
 
 workflows:
