@@ -19,7 +19,7 @@ jobs:
     - run: mkdir -p workspace
     - run:
         command: |
-          ditto transform \
+          ~/.local/bin/ditto transform \
             --base-url='https://pokeapi-215911.firebaseapp.com' \
             --src-dir=api-data/data \
             --dest-dir=workspace/_gen
