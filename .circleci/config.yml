@@ -26,7 +26,7 @@ jobs:
     - run: wget $(curl -s 'https://circleci.com/api/v1.1/project/github/PokeAPI/api-data/latest/artifacts?branch=master' | jq -r .[0].url)
     - run: mkdir -p public && tar xzf _gen.tar.gz -C public
     - run: yarn --cwd functions install
-    - run: functions/node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
+    - run: functions/node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN --project=$FIREBASE_PROJECT_ID
 
 workflows:
   version: 2
