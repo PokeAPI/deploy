@@ -24,6 +24,7 @@ jobs:
     - image: circleci/node:10.11.0
     steps:
     - run: git clone https://github.com/pokeapi/deploy --depth=1
+    - run: yarn --cwd deploy/functions
     - run: yarn --cwd deploy/functions run lint
     - run: yarn --cwd deploy/functions run build
     - attach_workspace:
