@@ -1,12 +1,21 @@
 version: 2
 
 jobs:
+  check:
+    docker:
+    - image: circleci/node:10.11.0
+    steps:
+    - run: git clone https://github.com/pokeapi/deploy --depth=1
+    - run: yarn --cwd deploy/functions
+    - run: yarn --cwd deploy/functions run lint
+    - run: yarn --cwd deploy/functions run build
+
   ditto-transform:
     docker:
     - image: circleci/python:3.6.5
     steps:
     - run: git clone https://github.com/pokeapi/api-data --depth=1
-    - run: pip install -r api-data/requirements.txt
+    - run: pip install --user -r api-data/requirements.txt
     - run: mkdir -p workspace
     - run:
         command: |
@@ -19,14 +28,12 @@ jobs:
         paths:
         - _gen
 
-  build-and-deploy:
+  firebase-deploy:
     docker:
     - image: circleci/node:10.11.0
     steps:
     - run: git clone https://github.com/pokeapi/deploy --depth=1
     - run: yarn --cwd deploy/functions
-    - run: yarn --cwd deploy/functions run lint
-    - run: yarn --cwd deploy/functions run build
     - attach_workspace:
         at: workspace
     - run: cp -r workspace/_gen deploy/public/_gen
@@ -37,6 +44,8 @@ workflows:
   deploy:
     jobs:
     - ditto-transform
-    - build-and-deploy:
-          requires:
-            - ditto-transform
+    - firebase-deploy:
+        requires:
+        - ditto-transform
+        branches:
+          only: master
