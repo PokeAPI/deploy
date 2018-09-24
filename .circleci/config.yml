@@ -15,7 +15,7 @@ jobs:
     - image: circleci/node:10.11.0
     steps:
     - checkout
-    - run: yarn --cwd deploy/functions
+    - run: yarn --cwd functions
     # TODO: write some tests and run them here
 
   deploy:
@@ -30,7 +30,7 @@ jobs:
 
 workflows:
   version: 2
-  flow:
+  workflow:
     jobs:
     - build
     - test:
