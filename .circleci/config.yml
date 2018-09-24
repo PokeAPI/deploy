@@ -47,5 +47,6 @@ workflows:
     - firebase-deploy:
         requires:
         - ditto-transform
-        branches:
-          only: master
+        filters:
+          branches:
+            only: master
