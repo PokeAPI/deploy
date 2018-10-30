@@ -23,10 +23,19 @@ jobs:
     - image: circleci/node:10.11.0
     steps:
     - checkout
+
+    # Get stored artifacts from api-data and unpack into the 'public' directory
     - run: wget $(curl -s 'https://circleci.com/api/v1.1/project/github/PokeAPI/api-data/latest/artifacts?branch=master' | jq -r .[0].url)
     - run: mkdir -p public && tar xzf _gen.tar.gz -C public
+
+    # Get stored artifacts from pokeapi.co and unpack into the 'public' directory
+    - run: wget $(curl -s 'https://circleci.com/api/v1.1/project/github/PokeAPI/pokeapi.co/latest/artifacts?branch=master' | jq -r .[0].url)
+    - run: mkdir -p public && tar xzf static_website.tar.gz -C public
+
+    # Deploy to Firebase
     - run: yarn --cwd functions install
     - run: functions/node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN --project=$FIREBASE_PROJECT_ID
+
 
 workflows:
   version: 2
