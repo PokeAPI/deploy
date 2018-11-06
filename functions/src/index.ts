@@ -80,11 +80,14 @@ const api = express();
 api.use(compression());
 api.use(cors());
 
+const oneDay = 24 * 60 * 60;
+
 api.get([
     "/api/v2/",
     "/api/v2/:endpoint/:id/",
     "/api/v2/:endpoint/:id/:extra/"
 ], (req, res) => {
+    res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`);
     axios.get(targetUrlForPath(req.path))
         .then(target => res.send(target.data))
         .catch(reason => res.sendStatus(status.NOT_FOUND));
@@ -94,6 +97,7 @@ api.get("/api/v2/:endpoint/", (req, res) => {
     axios.get(targetUrlForPath(req.path))
         .then(target => {
             const params = paramsOrDefault(req.query);
+            res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`);
             res.send(
                 Object.assign(target.data, {
                     next: getPageUrl(req.path, getNextPage(params, target.data.count)),
