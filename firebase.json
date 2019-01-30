@@ -17,6 +17,13 @@
         "source": "/api/**",
         "function": "api"
       }
+    ],
+    "redirects": [
+      {
+        "source": "/api/v1/:splat*",
+        "destination": "/api/v2/:splat",
+        "type": 301
+      }
     ]
   }
 }
