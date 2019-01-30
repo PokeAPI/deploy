@@ -23,6 +23,21 @@
         "source": "/api/v1/:splat*",
         "destination": "/api/v2/:splat",
         "type": 301
+      },
+      {
+        "source": "/about/",
+        "destination": "/about.html",
+        "type": 301
+      },
+      {
+        "source": "/docsv1/",
+        "destination": "/docs/v1.html",
+        "type": 301
+      },
+      {
+        "source": "/docsv2/",
+        "destination": "/docs/v2.html",
+        "type": 301
       }
     ]
   }
