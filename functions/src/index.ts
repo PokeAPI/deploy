@@ -6,7 +6,7 @@ import * as functions from "firebase-functions";
 import * as status from "http-status-codes"
 
 
-const BASE_URL = "https://pokeapi-215911.firebaseapp.com";
+const BASE_URL = "https://pokeapi.co"; // TODO: support also https://pokeapi-215911.firebaseapp.com conditionally
 
 function targetUrlForPath(path) {
     let target = BASE_URL;
