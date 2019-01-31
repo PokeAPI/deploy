@@ -18,6 +18,7 @@
         "function": "api"
       }
     ],
+    "trailingSlash": false,
     "redirects": [
       {
         "source": "/api/v1/:splat*",
