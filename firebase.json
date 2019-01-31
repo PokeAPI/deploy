@@ -26,17 +26,17 @@
         "type": 301
       },
       {
-        "source": "/about/",
+        "source": "/about",
         "destination": "/about.html",
         "type": 301
       },
       {
-        "source": "/docsv1/",
+        "source": "/docsv1",
         "destination": "/docs/v1.html",
         "type": 301
       },
       {
-        "source": "/docsv2/",
+        "source": "/docsv2",
         "destination": "/docs/v2.html",
         "type": 301
       }
