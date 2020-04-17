@@ -10,6 +10,9 @@
     "logs": "firebase functions:log"
   },
   "main": "lib/index.js",
+  "engines": {
+    "node": "8"
+  },
   "dependencies": {
     "axios": "^0.19.2",
     "compression": "^1.7.4",

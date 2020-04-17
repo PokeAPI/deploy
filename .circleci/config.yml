@@ -6,16 +6,16 @@ jobs:
     - image: circleci/node:10.11.0
     steps:
     - checkout
-    - run: yarn --cwd functions install
-    - run: yarn --cwd functions run lint
-    - run: yarn --cwd functions run build
+    - run: yarn --ignore-engines --cwd functions install
+    - run: yarn --ignore-engines --cwd functions run lint
+    - run: yarn --ignore-engines --cwd functions run build
 
   test:
     docker:
     - image: circleci/node:10.11.0
     steps:
     - checkout
-    - run: yarn --cwd functions
+    - run: yarn --ignore-engines --cwd functions
     # TODO: write some tests and run them here
 
   deploy:
@@ -34,7 +34,7 @@ jobs:
     - run: tar xzf static_website.tar.gz -C public
 
     # Deploy to Firebase
-    - run: yarn --cwd functions install
+    - run: yarn --ignore-engines --cwd functions install
     - run: functions/node_modules/.bin/firebase deploy --token=$FIREBASE_DEPLOY_TOKEN --project=$FIREBASE_PROJECT_ID
 
 
