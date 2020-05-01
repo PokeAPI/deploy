@@ -23,7 +23,7 @@ jobs:
     - image: circleci/node:10.11.0
     steps:
     - checkout
-    - run: sh scripts/deploy.sh
+    - run: sh -x scripts/deploy.sh
 
 workflows:
   version: 2
