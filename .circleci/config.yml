@@ -1,41 +1,45 @@
-version: 2
+version: 2.1
+
+executors:
+  node10:
+    docker:
+      - image: circleci/node:10.11.0
 
 jobs:
   build:
-    docker:
-    - image: circleci/node:10.11.0
+    executor: node10
     steps:
-    - checkout
-    - run: yarn --ignore-engines --cwd functions install
-    - run: yarn --ignore-engines --cwd functions run lint
-    - run: yarn --ignore-engines --cwd functions run build
+      - checkout
+      - run: yarn --ignore-engines --cwd functions install
+      - run: yarn --ignore-engines --cwd functions run lint
+      - run: yarn --ignore-engines --cwd functions run build
 
   test:
-    docker:
-    - image: circleci/node:10.11.0
+    executor: node10
     steps:
-    - checkout
-    - run: yarn --ignore-engines --cwd functions
-    # TODO: write some tests and run them here
+      - checkout
+      - run: yarn --ignore-engines --cwd functions
+      # TODO: write some tests and run them here
 
   deploy:
-    docker:
-    - image: circleci/node:10.11.0
+    executor: node10
     steps:
-    - checkout
-    - run: sh -x scripts/deploy.sh
+      - checkout
+      - run:
+          name: Deploy website and api-data to the correct environment (production/staging)
+          command: sh -x scripts/deploy.sh
 
 workflows:
   version: 2
   commit:
     jobs:
-    - build
-    - test:
-        requires:
-        - build
-    - deploy:
-        requires:
-        - test
-        # filters: # TODO: uncomment
-        #   branches:
-        #     only: master
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
+          # filters: # TODO: uncomment
+          #   branches:
+          #     only: master
