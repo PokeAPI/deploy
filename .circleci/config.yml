@@ -40,6 +40,6 @@ workflows:
       - deploy:
           requires:
             - test
-          # filters: # TODO: uncomment
-          #   branches:
-          #     only: master
+          filters:
+            branches:
+              only: master
