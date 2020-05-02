@@ -6,9 +6,11 @@
 # $deploy_location is an environment variable set when the job is triggered by one of the two repositories getting pushed
 
 if [ "${deploy_location:=staging}" = 'master' ]; then # https://stackoverflow.com/a/2013589/3482533
+    echo 'Deploying master branches of PokeAPI/api-data and PokeAPI/pokeapi.co to https://pokeapi.co'
     TOKEN=${FIREBASE_DEPLOY_TOKEN}
     PROJECT=${FIREBASE_PROJECT_ID}
 elif [ "${deploy_location}" = 'staging' ]; then
+    echo 'Deploying staging branches of PokeAPI/api-data and PokeAPI/pokeapi.co to the staging location'
     TOKEN=${FIREBASE_DEPLOY_TOKEN_STAGING}
     PROJECT=${FIREBASE_PROJECT_ID_STAGING}
 fi
