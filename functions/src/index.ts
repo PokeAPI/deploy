@@ -5,8 +5,12 @@ import * as express from "express";
 import * as functions from "firebase-functions";
 import * as status from "http-status-codes"
 
+const config = functions.config();
+let BASE_URL = "https://pokeapi.co";
 
-const BASE_URL = "https://pokeapi.co"; // TODO: support also https://pokeapi-215911.firebaseapp.com conditionally
+if (config.network && config.network.base_url) {
+    BASE_URL = config.network.base_url; // To retrieve the config run: `firebase functions:config:get --project <PROJECT_ID>`
+}
 
 function targetUrlForPath(path) {
     let target = BASE_URL;
