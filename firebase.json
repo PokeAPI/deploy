@@ -26,18 +26,13 @@
         "type": 301
       },
       {
-        "source": "/about",
-        "destination": "/about.html",
-        "type": 301
-      },
-      {
         "source": "/docsv1",
-        "destination": "/docs/v1.html",
+        "destination": "/docs/v1",
         "type": 301
       },
       {
         "source": "/docsv2",
-        "destination": "/docs/v2.html",
+        "destination": "/docs/v2",
         "type": 301
       }
     ]
