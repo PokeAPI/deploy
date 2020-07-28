@@ -1,4 +1,4 @@
-# PokeApi Firebase Deployment <img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/150.svg' height=50px/>
+# PokeApi Firebase Deployment <img src='https://veekun.com/dex/media/pokemon/main-sprites/firered-leafgreen/150.png' height=50px/>
 
 [![CircleCI](https://circleci.com/gh/PokeAPI/deploy.svg?style=shield)](https://circleci.com/gh/PokeAPI/deploy)
 
