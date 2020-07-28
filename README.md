@@ -1,5 +1,5 @@
+# PokeApi Firebase Deployment <img src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/150.svg' height=50px/>
+
 [![CircleCI](https://circleci.com/gh/PokeAPI/deploy.svg?style=shield)](https://circleci.com/gh/PokeAPI/deploy)
 
-# PokeApi Firebase Deployment
-
-(insert details here)
+> This repository contains the single Firebase function that powers https://pokeapi.co/api/v2/ alongside a set of scripts used by CircleCI to deploy PokeAPI to either [pokeapi.co](https://pokeapi.co/) or [staging.pokeapi.co](https://staging.pokeapi.co)
