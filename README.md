@@ -1,4 +1,4 @@
-# PokeApi Firebase Deployment <img src='https://veekun.com/dex/media/pokemon/main-sprites/firered-leafgreen/150.png' height=50px/>
+# PokeApi Firebase Deployment <a href="https://pokeapi.co/api/v2/pokemon/mewtwo"><img src='https://veekun.com/dex/media/pokemon/main-sprites/firered-leafgreen/150.png' height=50px/></a>
 
 [![CircleCI](https://circleci.com/gh/PokeAPI/deploy.svg?style=shield)](https://circleci.com/gh/PokeAPI/deploy)
 
