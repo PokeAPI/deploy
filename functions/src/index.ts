@@ -94,7 +94,7 @@ api.get([
     res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`);
     axios.get(targetUrlForPath(req.path))
         .then(target => res.send(target.data))
-        .catch(reason => res.sendStatus(status.NOT_FOUND));
+        .catch(reason => res.sendStatus(status.StatusCodes.NOT_FOUND));
 });
 
 api.get("/api/v2/:endpoint/", (req, res) => {
@@ -110,7 +110,7 @@ api.get("/api/v2/:endpoint/", (req, res) => {
                 })
             )
         })
-        .catch(reason => res.sendStatus(status.NOT_FOUND));
+        .catch(reason => res.sendStatus(status.StatusCodes.NOT_FOUND));
 });
 
 exports.api = functions.https.onRequest(api);
