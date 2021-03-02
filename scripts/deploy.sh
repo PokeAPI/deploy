@@ -3,9 +3,9 @@
 # Runs in CircleCI
 # Deploys both pokeapi.co and api-data to Firebase in the respective project
 # $FIREBASE_DEPLOY_TOKEN, $FIREBASE_PROJECT_ID, $FIREBASE_DEPLOY_TOKEN_STAGING, $FIREBASE_PROJECT_ID_STAGING are present in CircleCI
-# $deploy_location is an environment variable set when the job is triggered by one of the two repositories getting pushed
+# $deploy_location is an environment variable set when the job is triggered by one of the two repositories getting pushed. If not present then the deploy was triggered by a commit on the master of staging branch of this very repository. 
 
-if [ "${deploy_location:=master}" = 'master' ]; then # https://stackoverflow.com/a/2013589/3482533
+if [ "${deploy_location:=$CIRCLE_BRANCH}" = 'master' ]; then # bash parameter expansion (assign default value)
     echo 'Deploying master branches of PokeAPI/api-data and PokeAPI/pokeapi.co to https://pokeapi.co'
     TOKEN=${FIREBASE_DEPLOY_TOKEN}
     PROJECT=${FIREBASE_PROJECT_ID}
