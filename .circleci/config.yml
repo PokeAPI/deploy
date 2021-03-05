@@ -1,13 +1,13 @@
 version: 2.1
 
 executors:
-  node10:
+  node12:
     docker:
-      - image: circleci/node:10.11.0
+      - image: circleci/node:12.21.0
 
 jobs:
   build:
-    executor: node10
+    executor: node12
     steps:
       - checkout
       - run: yarn --ignore-engines --cwd functions install
@@ -15,19 +15,19 @@ jobs:
       - run: yarn --ignore-engines --cwd functions run build
 
   test:
-    executor: node10
+    executor: node12
     steps:
       - checkout
       - run: yarn --ignore-engines --cwd functions
       # TODO: write some tests and run them here
 
   deploy:
-    executor: node10
+    executor: node12
     steps:
       - checkout
       - run:
           name: Deploy website and api-data to the correct environment (production/staging)
-          command: sh -x scripts/deploy.sh
+          command: sh scripts/deploy.sh
 
 workflows:
   version: 2
@@ -42,4 +42,6 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - staging
