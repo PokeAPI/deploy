@@ -1,7 +1,7 @@
 {
   "functions": {
     "predeploy": [
-      "(cd \"$RESOURCE_DIR\" && run ci)"
+      "(cd \"$RESOURCE_DIR\" && npm ci)"
     ]
   },
   "hosting": {
