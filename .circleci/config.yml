@@ -10,7 +10,7 @@ jobs:
     executor: node12
     steps:
       - checkout
-      - run: cd functions && npm ci
+      - run: (cd functions && npm ci)
 
   # test:
   #   executor: node12
