@@ -9,7 +9,7 @@ const config = functions.config()
 let BASE_URL = "https://pokeapi.co"
 const raxConfig = {
     retry: 1,
-    noResponseRetries: 1,
+    noResponseRetries: 2,
     retryDelay: 100,
     httpMethodsToRetry: ['GET'],
     statusCodesToRetry: [[100, 199], [400, 499], [500, 599]],
@@ -103,19 +103,34 @@ api.get([
     "/api/v2/:endpoint/:id/",
     "/api/v2/:endpoint/:id/:extra/"
 ], (req, res) => {
-    res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`)
-    axios({
-        url: targetUrlForPath(req.path),
-        raxConfig,
-    })
-    .then(target => res.send(target.data))
-    .catch(reason => res.sendStatus(reason.response.status))
+    const testFolder = '../';
+    const fs = require('fs');
+
+    fs.readdir(testFolder, (err, files) => {
+        files.forEach(file => {
+            console.log(file);
+        });
+    });
+    // axios({
+    //     url: targetUrlForPath(req.path),
+    //     raxConfig,
+    //     timeout: 500
+    // })
+    // .then(target => {
+    //     res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`)
+    //     res.send(target.data)
+    // })
+    // .catch(reason => {
+    //     console.log('end')
+         res.sendStatus(404)
+    // })
 })
 
 api.get("/api/v2/:endpoint/", (req, res) => {
     axios({
         url: targetUrlForPath(req.path),
         raxConfig,
+        timeout: 1000
     })
     .then(target => {
         const params = paramsOrDefault(req.query)
@@ -128,7 +143,10 @@ api.get("/api/v2/:endpoint/", (req, res) => {
             })
         )
     })
-    .catch(reason => res.sendStatus(reason.response.status))
+    .catch(reason => {
+        console.log(`catch ${req.path}`)
+        res.sendStatus(reason.response.status)
+    })
 })
 
 exports.api = functions.https.onRequest(api)
