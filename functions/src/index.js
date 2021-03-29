@@ -1,5 +1,4 @@
-const axios = require("axios")
-const rax = require('retry-axios')
+const got = require('got');
 const compression = require("compression")
 const cors = require("cors")
 const express = require("express")
@@ -7,17 +6,6 @@ const functions = require("firebase-functions")
 
 const config = functions.config()
 let BASE_URL = "https://pokeapi.co"
-const raxConfig = {
-    retry: 1,
-    noResponseRetries: 2,
-    retryDelay: 100,
-    httpMethodsToRetry: ['GET'],
-    statusCodesToRetry: [[100, 199], [400, 499], [500, 599]],
-    backoffType: 'static',
-    onRetryAttempt: err => {
-        console.log(`retry attempted for ${err.request.path}. Got ${err.response.status}`)
-    }
-}
 
 if (config.network && config.network.base_url) {
     BASE_URL = config.network.base_url // To retrieve the config run: `firebase functions:config:get --project <PROJECT_ID>`
@@ -90,62 +78,78 @@ function getNextPage(params, count) {
     return null
 }
 
-const interceptorId = rax.attach()
 const api = express()
 
 api.use(compression())
 api.use(cors())
 
 const oneDay = 24 * 60 * 60
+const oneHour = 60 * 60
+
+const gotConfig = {
+    timeout: 8000,
+    retry: {
+        limit: 1,
+        statusCodes: [404, 408, 413, 429, 500, 502, 503, 504, 521, 522, 524], // maybe not needed
+        //calculateDelay: function({attemptCount, retryOptions, error, computedValue}) {console.log(computedValue);return 0}
+    },
+    hooks: {
+        beforeRetry: [
+            (options, error, retryCount) => {
+                console.log(`retrying ${options.url.pathname}`)
+            }
+        ]
+    }
+}
 
 api.get([
     "/api/v2/",
     "/api/v2/:endpoint/:id/",
     "/api/v2/:endpoint/:id/:extra/"
 ], (req, res) => {
-    const testFolder = '../';
-    const fs = require('fs');
-
-    fs.readdir(testFolder, (err, files) => {
-        files.forEach(file => {
-            console.log(file);
-        });
-    });
-    // axios({
-    //     url: targetUrlForPath(req.path),
-    //     raxConfig,
-    //     timeout: 500
-    // })
-    // .then(target => {
-    //     res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`)
-    //     res.send(target.data)
-    // })
-    // .catch(reason => {
-    //     console.log('end')
-         res.sendStatus(404)
-    // })
+    got(targetUrlForPath(req.path), gotConfig)
+    .json()
+    .then(json => {
+        res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`)
+        res.send(json)
+    })
+    .catch(reason => {
+        if (reason.response && reason.response.statusCode) {
+            console.log(reason.response.statusCode)
+            res.set('Cache-Control', `public, max-age=${oneHour}, s-maxage=${oneHour}`)
+            res.sendStatus(reason.response.statusCode)
+        } else if (reason.code === 'ETIMEDOUT') {
+            res.sendStatus(504)
+        } else {
+            res.sendStatus(500)
+        }
+    })
 })
 
 api.get("/api/v2/:endpoint/", (req, res) => {
-    axios({
-        url: targetUrlForPath(req.path),
-        raxConfig,
-        timeout: 1000
-    })
-    .then(target => {
+    got(targetUrlForPath(req.path), gotConfig)
+    .json()
+    .then(json => {
         const params = paramsOrDefault(req.query)
         res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`)
         res.send(
-            Object.assign(target.data, {
-                next: getPageUrl(req.path, getNextPage(params, target.data.count)),
+            Object.assign(json, {
+                next: getPageUrl(req.path, getNextPage(params, json.count)),
                 previous: getPageUrl(req.path, getPreviousPage(params)),
-                results: target.data.results.slice(params.offset, params.offset + params.limit)
+                results: json.results.slice(params.offset, params.offset + params.limit)
             })
         )
     })
     .catch(reason => {
-        console.log(`catch ${req.path}`)
-        res.sendStatus(reason.response.status)
+        if (reason.response && reason.response.statusCode) {
+            console.log(reason.response.statusCode)
+            res.set('Cache-Control', `public, max-age=${oneHour}, s-maxage=${oneHour}`)
+            res.sendStatus(reason.response.statusCode)
+        } else if (reason.code === 'ETIMEDOUT') {
+            res.sendStatus(504)
+        } else {
+            res.sendStatus(500)
+        }
     })
 })
 
