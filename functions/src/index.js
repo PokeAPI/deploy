@@ -78,6 +78,20 @@ function getNextPage(params, count) {
     return null
 }
 
+function handleErrors(reason, req, res) {
+    if (reason.response && reason.response.statusCode) {
+        res.set('Cache-Control', `public, max-age=${oneHour}, s-maxage=${oneHour}`)
+        res.sendStatus(reason.response.statusCode)
+    } else if (reason.code === 'ETIMEDOUT') {
+        console.error(`504: ${reason.name} for ${req.path}`)
+        res.sendStatus(504)
+    } else {
+        console.error(`500: ${reason.name} for ${req.path}`)
+        res.sendStatus(500)
+    }
+}
+
+
 const api = express()
 
 api.use(compression())
@@ -91,12 +105,11 @@ const gotConfig = {
     retry: {
         limit: 1,
         statusCodes: [404, 408, 413, 429, 500, 502, 503, 504, 521, 522, 524], // maybe not needed
-        //calculateDelay: function({attemptCount, retryOptions, error, computedValue}) {console.log(computedValue);return 0}
     },
     hooks: {
         beforeRetry: [
             (options, error, retryCount) => {
-                console.log(`retrying ${options.url.pathname}`)
+                console.log(`${error.name}: retrying ${options.url.pathname}`)
             }
         ]
     }
@@ -114,15 +127,7 @@ api.get([
         res.send(json)
     })
     .catch(reason => {
-        if (reason.response && reason.response.statusCode) {
-            console.log(reason.response.statusCode)
-            res.set('Cache-Control', `public, max-age=${oneHour}, s-maxage=${oneHour}`)
-            res.sendStatus(reason.response.statusCode)
-        } else if (reason.code === 'ETIMEDOUT') {
-            res.sendStatus(504)
-        } else {
-            res.sendStatus(500)
-        }
+        handleErrors(reason, req, res)
     })
 })
 
@@ -141,15 +146,7 @@ api.get("/api/v2/:endpoint/", (req, res) => {
         )
     })
     .catch(reason => {
-        if (reason.response && reason.response.statusCode) {
-            console.log(reason.response.statusCode)
-            res.set('Cache-Control', `public, max-age=${oneHour}, s-maxage=${oneHour}`)
-            res.sendStatus(reason.response.statusCode)
-        } else if (reason.code === 'ETIMEDOUT') {
-            res.sendStatus(504)
-        } else {
-            res.sendStatus(500)
-        }
+        handleErrors(reason, req, res)
     })
 })
 
