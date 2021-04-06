@@ -10,16 +10,7 @@ jobs:
     executor: node12
     steps:
       - checkout
-      - run: yarn --ignore-engines --cwd functions install
-      - run: yarn --ignore-engines --cwd functions run lint
-      - run: yarn --ignore-engines --cwd functions run build
-
-  test:
-    executor: node12
-    steps:
-      - checkout
-      - run: yarn --ignore-engines --cwd functions
-      # TODO: write some tests and run them here
+      - run: (cd functions && npm ci)
 
   deploy:
     executor: node12
@@ -34,12 +25,9 @@ workflows:
   commit:
     jobs:
       - build
-      - test:
-          requires:
-            - build
       - deploy:
           requires:
-            - test
+            - build
           filters:
             branches:
               only:

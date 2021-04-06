@@ -1,8 +1,7 @@
 {
   "functions": {
     "predeploy": [
-      "yarn --ignore-engines --cwd \"$RESOURCE_DIR\" run lint",
-      "yarn --ignore-engines --cwd \"$RESOURCE_DIR\" run build"
+      "(cd \"$RESOURCE_DIR\" && npm ci)"
     ]
   },
   "hosting": {
