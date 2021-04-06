@@ -12,13 +12,6 @@ jobs:
       - checkout
       - run: (cd functions && npm ci)
 
-  # test:
-  #   executor: node12
-  #   steps:
-  #     - checkout
-  #     - run: yarn --ignore-engines --cwd functions
-  #     # TODO: write some tests and run them here
-
   deploy:
     executor: node12
     steps:
