@@ -1,19 +1,19 @@
 version: 2.1
 
 executors:
-  node12:
+  node:
     docker:
-      - image: circleci/node:12.21.0
+      - image: cimg/node:lts
 
 jobs:
   build:
-    executor: node12
+    executor: node
     steps:
       - checkout
       - run: (cd functions && npm ci)
 
   deploy:
-    executor: node12
+    executor: node
     steps:
       - checkout
       - run:
