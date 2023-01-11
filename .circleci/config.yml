@@ -5,6 +5,11 @@ executors:
     docker:
       - image: cimg/node:lts
 
+parameters:
+  deploy_location:
+    default: "staging"
+    type: string
+
 jobs:
   build:
     executor: node
@@ -14,10 +19,6 @@ jobs:
 
   deploy:
     executor: node
-    parameters:
-      deploy_location:
-        default: "staging"
-        type: string
     steps:
       - checkout
       - run:
