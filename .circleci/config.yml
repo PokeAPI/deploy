@@ -22,6 +22,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup environment variables
+          command: |
+            echo "export deploy_location=<< parameters.deploy_location >>" >> "$BASH_ENV"
+      - run:
           name: Deploy website and api-data to the correct environment (production/staging)
           command: sh -x scripts/deploy.sh
 
