@@ -27,7 +27,7 @@ jobs:
             echo "export deploy_location=<< pipeline.parameters.deploy_location >>" >> "$BASH_ENV"
       - run:
           name: Deploy website and api-data to the correct environment (production/staging)
-          command: sh -x scripts/deploy.sh
+          command: sh scripts/deploy.sh
 
 workflows:
   version: 2
