@@ -93,10 +93,10 @@ function handleErrors(reason, req, res) {
 }
 
 
-const api = express()
+const app = express()
 
-api.use(compression())
-api.use(cors())
+app.use(compression())
+app.use(cors())
 
 const oneDay = 24 * 60 * 60
 const oneHour = 60 * 60
@@ -116,7 +116,7 @@ const gotConfig = {
     }
 }
 
-api.get([
+app.get([
     "/api/v2/",
     "/api/v2/:endpoint/:id/",
     "/api/v2/:endpoint/:id/:extra/"
@@ -132,7 +132,7 @@ api.get([
     })
 })
 
-api.get("/api/v2/:endpoint/", (req, res) => {
+app.get("/api/v2/:endpoint/", (req, res) => {
     got(targetUrlForPath(req.path), gotConfig)
     .json()
     .then(json => {
@@ -151,4 +151,4 @@ api.get("/api/v2/:endpoint/", (req, res) => {
     })
 })
 
-export const v2 = functions.https.onRequest(api)
+export const api = functions.https.onRequest(app)
