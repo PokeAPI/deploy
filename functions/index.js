@@ -1,8 +1,8 @@
-const got = require('got');
-const compression = require("compression")
-const cors = require("cors")
-const express = require("express")
-const functions = require("firebase-functions")
+import got from 'got'
+import compression from 'compression'
+import cors from 'cors'
+import express from 'express'
+import functions from 'firebase-functions'
 
 const config = functions.config()
 let BASE_URL = "https://pokeapi.co"
@@ -19,6 +19,7 @@ function targetUrlForPath(path) {
         target += "/"
     }
     target += "index.json"
+    console.log(target)
     return target
 }
 
@@ -150,4 +151,4 @@ api.get("/api/v2/:endpoint/", (req, res) => {
     })
 })
 
-exports.api = functions.https.onRequest(api)
+export const v2 = functions.https.onRequest(api)

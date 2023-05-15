@@ -1,7 +1,15 @@
 {
   "functions": {
+    "source": "functions",
+    "codebase": "default",
     "predeploy": [
       "(cd \"$RESOURCE_DIR\" && npm ci)"
+    ],
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log"
     ]
   },
   "hosting": {

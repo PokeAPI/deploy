@@ -8,7 +8,8 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
   },
-  "main": "src/index.js",
+  "type": "module",
+  "exports": "./index.js",
   "engines": {
     "node": "18"
   },
