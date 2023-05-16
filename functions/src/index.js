@@ -97,8 +97,8 @@ const api = express()
 api.use(compression())
 api.use(cors())
 
-const oneDay = 24 * 60 * 60
-const oneHour = 60 * 60
+const oneDay = 86400
+const oneHour = 3600
 
 const gotConfig = {
     timeout: 8000,
