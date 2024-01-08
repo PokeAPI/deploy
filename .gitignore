@@ -171,3 +171,4 @@ modules.xml
 
 
 # End of https://www.gitignore.io/api/node,firebase,webstorm+all
+gha-creds-*.json
