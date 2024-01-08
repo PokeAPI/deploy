@@ -34,5 +34,11 @@ jobs:
       shell: bash
       run: |
           echo "$GCP_SSH_PRIVATE_KEY" >> pk
+    - name: write public key
+      env:
+        GCP_SSH_PUBLIC_KEY: ${{secrets.GCP_SSH_PUBLIC_KEY}}
+      shell: bash
+      run: |
+          echo "$GCP_SSH_PUBLIC_KEY" >> pk.pub
     - name: 'Use gcloud CLI'
       run: 'gcloud compute ssh ga@graphql5 --zone us-east1-b --ssh-key-file pk --quiet --command "pwd"'
