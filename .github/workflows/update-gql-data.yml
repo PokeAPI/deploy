@@ -26,7 +26,7 @@ jobs:
         --snapshot-type=ARCHIVE \
         --source-disk=graphql5 \
         --source-disk-zone=us-east1-b \
-        --storage-location=us-east1'
+        --storage-location=us-east1
     # - uses: 'google-github-actions/ssh-compute@v1'
     #   with:
     #     instance_name: 'graphql5'
