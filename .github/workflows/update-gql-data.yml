@@ -21,7 +21,7 @@ jobs:
         version: '>= 363.0.0'
     - name: 'Make snapshot'
       run: |
-        gcloud compute snapshots create gql-1 \
+        gcloud compute snapshots create gql-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT} \
         --labels=trigger=gql-data-update,next-head-ref=${{ github.head_ref }} \
         --snapshot-type=ARCHIVE \
         --source-disk=graphql5 \
