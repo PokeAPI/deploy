@@ -2,7 +2,7 @@ name: update-gql-data
 on:
   push:
     branches:
-      - gql
+      - master
 jobs:
   update-gql-data:
     runs-on: ubuntu-22.04
