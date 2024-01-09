@@ -21,22 +21,4 @@ jobs:
         zone: 'us-east1-b'
         ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
         user: ga
-        command: sudo -i sh -c 'echo $(pwd) > /tmp/a'
-    # - name: 'Set up Cloud SDK'
-    #   uses: 'google-github-actions/setup-gcloud@v2'
-    #   with:
-    #     version: '>= 363.0.0'
-    # - name: write secret
-    #   env:
-    #     GCP_SSH_PRIVATE_KEY: ${{secrets.GCP_SSH_PRIVATE_KEY}}
-    #   shell: bash
-    #   run: |
-    #       echo "$GCP_SSH_PRIVATE_KEY" >> pk
-    # - name: write public key
-    #   env:
-    #     GCP_SSH_PUBLIC_KEY: ${{secrets.GCP_SSH_PUBLIC_KEY}}
-    #   shell: bash
-    #   run: |
-    #       echo "$GCP_SSH_PUBLIC_KEY" >> pk.pub
-    # - name: 'Use gcloud CLI'
-    #   run: 'gcloud compute ssh ga@graphql5 --zone us-east1-b --ssh-key-file pk --quiet --command "pwd"'
+        command: sudo -i sh -c 'cd pokeapi && make update-graphql-data-prod'
