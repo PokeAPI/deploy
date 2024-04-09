@@ -2,9 +2,8 @@ const got = require('got');
 const compression = require("compression")
 const cors = require("cors")
 const express = require("express")
-const functions = require("firebase-functions")
+const config = require("firebase-functions").config()
 
-const config = functions.config()
 let BASE_URL = "https://pokeapi.co"
 
 if (config.network && config.network.base_url) {
@@ -12,14 +11,11 @@ if (config.network && config.network.base_url) {
 }
 
 function targetUrlForPath(path) {
-    let target = BASE_URL
-    target += "/_gen"
-    target += path
+    let target = BASE_URL + "/_gen" + path
     if (!target.endsWith("/")) {
         target += "/"
     }
-    target += "index.json"
-    return target
+    return (target + "index.json")
 }
 
 function paramsOrDefault(query) {
@@ -80,7 +76,7 @@ function getNextPage(params, count) {
 
 function handleErrors(reason, req, res) {
     if (reason.response && reason.response.statusCode) {
-        res.set('Cache-Control', `public, max-age=${oneHour}, s-maxage=${oneHour}`)
+        res.set('Cache-Control', `public, max-age=${failTtl}, s-maxage=${failTtl}`)
         res.sendStatus(reason.response.statusCode)
     } else if (reason.code === 'ETIMEDOUT') {
         console.error(`504: ${reason.name} for ${req.path}`)
@@ -97,8 +93,8 @@ const api = express()
 api.use(compression())
 api.use(cors())
 
-const oneDay = 86400
-const oneHour = 3600
+const successTtl = 86400 // 1 day
+const failTtl = 432000 // 5 days
 
 const gotConfig = {
     timeout: 8000,
@@ -123,7 +119,7 @@ api.get([
     got(targetUrlForPath(req.path), gotConfig)
     .json()
     .then(json => {
-        res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`)
+        res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
         res.send(json)
     })
     .catch(reason => {
@@ -136,7 +132,7 @@ api.get("/api/v2/:endpoint/", (req, res) => {
     .json()
     .then(json => {
         const params = paramsOrDefault(req.query)
-        res.set('Cache-Control', `public, max-age=${oneDay}, s-maxage=${oneDay}`)
+        res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
         res.send(
             Object.assign(json, {
                 next: getPageUrl(req.path, getNextPage(params, json.count)),
