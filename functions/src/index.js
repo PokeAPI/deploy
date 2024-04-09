@@ -2,8 +2,9 @@ const got = require('got');
 const compression = require("compression")
 const cors = require("cors")
 const express = require("express")
-const config = require("firebase-functions").config()
+const functions = require("firebase-functions")
 
+const config = functions.config()
 let BASE_URL = "https://pokeapi.co"
 
 if (config.network && config.network.base_url) {
