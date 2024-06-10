@@ -2,14 +2,11 @@ const got = require('got');
 const compression = require("compression")
 const cors = require("cors")
 const express = require("express")
-const functions = require("firebase-functions")
+const {onRequest} = require("firebase-functions/v2/https")
+const {defineString} = require('firebase-functions/params')
 
-const config = functions.config()
-let BASE_URL = "https://pokeapi.co"
-
-if (config.network && config.network.base_url) {
-    BASE_URL = config.network.base_url // To retrieve the config run: `firebase functions:config:get --project <PROJECT_ID>`
-}
+const NETWORK_BASE_URL = defineString('NETWORK_BASE_URL', {default: 'https://pokeapi.co',
+    description: 'The protocol://domain used to fetch JSON data'});
 
 function targetUrlForPath(path) {
     let target = BASE_URL + "/_gen" + path
@@ -147,4 +144,9 @@ api.get("/api/v2/:endpoint/", (req, res) => {
     })
 })
 
-exports.api = functions.https.onRequest(api)
+exports.api_v2functions = onRequest({
+    concurrency: 80,
+    maxInstances: 600,
+    memory: '128MiB',
+    timeoutSeconds: 60
+}, api)
