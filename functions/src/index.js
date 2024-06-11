@@ -6,10 +6,10 @@ const {onRequest} = require("firebase-functions/v2/https")
 const {defineString} = require('firebase-functions/params')
 
 const NETWORK_BASE_URL = defineString('NETWORK_BASE_URL', {default: 'https://pokeapi.co',
-    description: 'The protocol://domain used to fetch JSON data'});
+    description: 'The protocol://domain used to fetch JSON data'}).value();
 
 function targetUrlForPath(path) {
-    let target = BASE_URL + "/_gen" + path
+    let target = NETWORK_BASE_URL + "/_gen" + path
     if (!target.endsWith("/")) {
         target += "/"
     }
@@ -27,7 +27,7 @@ function getPageUrl(path, params) {
     if (params === null) {
         return null
     }
-    return BASE_URL + path + "?offset=" + params.offset + "&limit=" + params.limit
+    return NETWORK_BASE_URL + path + "?offset=" + params.offset + "&limit=" + params.limit
 }
 
 function getPreviousPage(params) {
@@ -89,7 +89,7 @@ function handleErrors(reason, req, res) {
 const api = express()
 
 api.use(compression())
-api.use(cors())
+//api.use(cors())
 
 const successTtl = 86400 // 1 day
 const failTtl = 432000 // 5 days
