@@ -144,7 +144,7 @@ api.get("/api/v2/:endpoint/", (req, res) => {
     })
 })
 
-exports.api_v2functions = onRequest({
+exports.api = onRequest({
     concurrency: 80,
     maxInstances: 600,
     memory: '128MiB',
