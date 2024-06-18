@@ -95,7 +95,7 @@ api.use(compression())
 api.use(cors())
 
 const successTtl = 86400 // 1 day
-const failTtl = 432000 // 5 days
+const failTtl = 86400 // 5 days
 
 const gotConfig = {
     timeout: 8000,
