@@ -14,10 +14,6 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "function": "api"
-      },
-      {
-        "source": "/api_v2functions/**",
         "function": "api_v2functions"
       }
     ],

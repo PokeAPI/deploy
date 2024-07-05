@@ -25,6 +25,6 @@ functions/node_modules/.bin/firebase emulators:start --inspect-functions --proje
 
 sleep 30
 
-curl -f http://localhost:5000/api_v2functions/v2/
+curl -f http://localhost:5000/api/v2/
 curl -f http://localhost:5000/
 exit 0
