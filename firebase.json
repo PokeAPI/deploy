@@ -1,9 +1,5 @@
 {
-  "functions": {
-    "predeploy": [
-      "(cd \"$RESOURCE_DIR\" && npm ci)"
-    ]
-  },
+  "functions": {},
   "hosting": {
     "public": "public",
     "ignore": [
@@ -14,7 +10,7 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "function": "api"
+        "function": "api_v2functions"
       }
     ],
     "trailingSlash": false,

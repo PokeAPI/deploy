@@ -35,4 +35,4 @@ tar xzf static_website.tar.gz -C public
 
 # Deploy to Firebase
 (cd functions && npm ci)
-functions/node_modules/.bin/firebase deploy --token="${TOKEN}" --project="${PROJECT}"
+functions/node_modules/.bin/firebase deploy --project="${PROJECT}" --only functions:api_v2functions,hosting
