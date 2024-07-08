@@ -2,17 +2,14 @@ const got = require('got');
 const compression = require("compression")
 const cors = require("cors")
 const express = require("express")
-const functions = require("firebase-functions")
+const {onRequest} = require("firebase-functions/v2/https")
+const {defineString} = require('firebase-functions/params')
 
-const config = functions.config()
-let BASE_URL = "https://pokeapi.co"
-
-if (config.network && config.network.base_url) {
-    BASE_URL = config.network.base_url // To retrieve the config run: `firebase functions:config:get --project <PROJECT_ID>`
-}
+const NETWORK_BASE_URL = defineString('NETWORK_BASE_URL', {default: 'https://pokeapi.co',
+    description: 'The protocol://domain used to fetch JSON data'}).value();
 
 function targetUrlForPath(path) {
-    let target = BASE_URL + "/_gen" + path
+    let target = NETWORK_BASE_URL + "/_gen" + path
     if (!target.endsWith("/")) {
         target += "/"
     }
@@ -30,7 +27,7 @@ function getPageUrl(path, params) {
     if (params === null) {
         return null
     }
-    return BASE_URL + path + "?offset=" + params.offset + "&limit=" + params.limit
+    return NETWORK_BASE_URL + path + "?offset=" + params.offset + "&limit=" + params.limit
 }
 
 function getPreviousPage(params) {
@@ -92,7 +89,7 @@ function handleErrors(reason, req, res) {
 const api = express()
 
 api.use(compression())
-api.use(cors())
+//api.use(cors())
 
 const successTtl = 86400 // 1 day
 const failTtl = 86400 // 5 days
@@ -147,4 +144,9 @@ api.get("/api/v2/:endpoint/", (req, res) => {
     })
 })
 
-exports.api = functions.https.onRequest(api)
+exports.api_v2functions = onRequest({
+    concurrency: 80,
+    maxInstances: 600,
+    memory: '128MiB',
+    timeoutSeconds: 60
+}, api)
