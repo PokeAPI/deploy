@@ -89,10 +89,10 @@ function handleErrors(reason, req, res) {
 const api = express()
 
 api.use(compression())
-//api.use(cors())
+api.use(cors())
 
 const successTtl = 86400 // 1 day
-const failTtl = 86400 // 5 days
+const failTtl = 86400 // 1 days
 
 const gotConfig = {
     timeout: 8000,
@@ -145,8 +145,9 @@ api.get("/api/v2/:endpoint/", (req, res) => {
 })
 
 exports.api_v2functions = onRequest({
-    concurrency: 80,
+    concurrency: 500,
     maxInstances: 600,
-    memory: '128MiB',
-    timeoutSeconds: 60
+    memory: '256MiB',
+    timeoutSeconds: 60,
+    cors: true
 }, api)
