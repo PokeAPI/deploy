@@ -15,7 +15,6 @@ jobs:
     executor: node
     steps:
       - checkout
-      - run: (cd functions && npm ci)
       - run: PROJECT=pokeapi-test-b6137 sh -x scripts/test.sh
 
   deploy:

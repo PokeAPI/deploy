@@ -1,5 +1,7 @@
 {
-  "functions": {},
+  "functions": {
+    "source": "functions_v1"
+  },
   "hosting": {
     "public": "public",
     "ignore": [
@@ -10,7 +12,7 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "function": "api_v2functions"
+        "function": "api_v1functions"
       }
     ],
     "trailingSlash": false,

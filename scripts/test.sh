@@ -20,11 +20,11 @@ if [ $? -ne 0 ]; then
 fi
 tar xzf static_website.tar.gz -C public
 
-(cd functions && npm ci)
-functions/node_modules/.bin/firebase emulators:start --inspect-functions --project="${PROJECT}" &
-
+(cd functions_v1 && npm ci)
+functions_v1/node_modules/.bin/firebase emulators:start --inspect-functions --project="${FIREBASE_PROJECT_ID_STAGING}" &
+V1_PID=$!
 sleep 30
-
 curl -f http://localhost:5000/api/v2/
 curl -f http://localhost:5000/
+kill -9 $V1_PID
 exit 0
