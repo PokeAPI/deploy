@@ -149,4 +149,8 @@ api.get("/api/v2/:endpoint/", (req, res) => {
     })
 })
 
-exports.api_v1functions = functions.https.onRequest(api)
+exports.api_v1functions = functions.runWith({
+    maxInstances: 400,
+    memory: "128MB",
+    timeoutSeconds: 30,
+  }).https.onRequest(api)
