@@ -14,7 +14,7 @@ if (process.env.FIREBASE_DEBUG_MODE) {
 }
 
 function targetUrlForPath(path) {
-    let target = BASE_URL + "/_gen" + path
+    let target = BASE_URL + "/_gen" + path.toLowerCase()
     if (!target.endsWith("/")) {
         target += "/"
     }
@@ -32,7 +32,7 @@ function getPageUrl(path, params) {
     if (params === null) {
         return null
     }
-    return BASE_URL + path + "?offset=" + params.offset + "&limit=" + params.limit
+    return BASE_URL + path.toLowerCase() + "?offset=" + params.offset + "&limit=" + params.limit
 }
 
 function getPreviousPage(params) {
