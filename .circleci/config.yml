@@ -29,6 +29,22 @@ jobs:
           name: Deploy website and api-data to the correct environment (production/staging)
           command: sh scripts/deploy.sh
 
+  purge_cache:
+    executor: node
+    steps:
+      - run:
+          name: Purge Cloudflare cache
+          command: |
+            sleep 10
+            curl https://api.cloudflare.com/client/v4/zones/1b447807502a801bdff3f71052fab25b/purge_cache \
+              -H 'Content-Type: application/json' \
+              -H "Authorization: Bearer $CF_POKEAPI_CIRCLECI_CACHE_PURGE_NARAMSIM" \
+              -d '{
+                "files": [
+                  "https://pokeapi.co/"
+                ]
+              }'
+
 workflows:
   version: 2
   commit:
@@ -42,3 +58,10 @@ workflows:
               only:
                 - master
                 - staging
+      - purge_cache:
+          requires:
+            - deploy
+          filters:
+            branches:
+              only:
+                - master
