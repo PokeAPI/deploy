@@ -19,7 +19,7 @@
         ]
       },
       {
-        "source": "https://pokeapi.co/**/*.@(css|js|png)",
+        "source": "**/*.@(css|js|png)",
         "headers": [
           {
             "key": "Cache-Tag",
@@ -32,7 +32,7 @@
         ]
       },
       {
-        "source": "https://staging.pokeapi.co/**/*.@(css|js|png)",
+        "source": "/",
         "headers": [
           {
             "key": "Cache-Tag",
