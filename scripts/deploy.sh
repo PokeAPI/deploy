@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Executed when the `master` or `staging` branches of PokeAPI/api-data and PokeAPI/pokeapi.co are pushed to
 # Runs in CircleCI
 # Deploys both pokeapi.co and api-data to Firebase in the respective project
@@ -9,11 +9,11 @@ export GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcp_sa.json
 
 if [ "${deploy_location:=$CIRCLE_BRANCH}" = 'master' ]; then
     echo 'Deploying master branches of PokeAPI/api-data and PokeAPI/pokeapi.co to https://pokeapi.co'
-    echo "$GCP_SA" > "$HOME"/gcp_sa.json
+    echo "$GCP_SA_B64" | base64 --decode > "$HOME"/gcp_sa.json
     PROJECT=${FIREBASE_PROJECT_ID}
 elif [ "${deploy_location}" = 'staging' ]; then
     echo 'Deploying staging branches of PokeAPI/api-data and PokeAPI/pokeapi.co to the staging location'
-    echo "$GCP_SA_STAGING" > "$HOME"/gcp_sa.json
+    echo "$GCP_SA_STAGING_B64" | base64 --decode > "$HOME"/gcp_sa.json
     PROJECT=${FIREBASE_PROJECT_ID_STAGING}
 fi
 
