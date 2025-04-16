@@ -5,7 +5,7 @@
 # $GCP_SA, $FIREBASE_PROJECT_ID, $GCP_SA_STAGING, $FIREBASE_PROJECT_ID_STAGING are present in CircleCI
 # $deploy_location is an environment variable set when the job is triggered by one of the two repositories getting pushed. If not present then the deploy was triggered by a commit on the master or staging branch of this very repository.
 
-export GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcp_sa.json
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcp_sa.json # This SA needs Editor role. Firebase Admin isn't necessary. The
 
 if [ "${deploy_location:=$CIRCLE_BRANCH}" = 'master' ]; then
     echo 'Deploying master branches of PokeAPI/api-data and PokeAPI/pokeapi.co to https://pokeapi.co'
