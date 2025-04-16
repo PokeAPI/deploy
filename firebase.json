@@ -6,7 +6,7 @@
     "public": "public",
     "headers": [
       {
-        "regex": "https://pokeapi.co/.*/routeInfo.json",
+        "regex": "https://(staging\\.)?pokeapi.co/.*routeInfo.json",
         "headers": [
           {
             "key": "Cache-Tag",
@@ -20,6 +20,19 @@
       },
       {
         "source": "https://pokeapi.co/**/*.@(css|js|png)",
+        "headers": [
+          {
+            "key": "Cache-Tag",
+            "value": "website"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "max-age=86400"
+          }
+        ]
+      },
+      {
+        "source": "https://staging.pokeapi.co/**/*.@(css|js|png)",
         "headers": [
           {
             "key": "Cache-Tag",
