@@ -4,6 +4,47 @@
   },
   "hosting": {
     "public": "public",
+    "headers": [
+      {
+        "source": "**/*routeInfo.json",
+        "headers": [
+          {
+            "key": "Cache-Tag",
+            "value": "website"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "max-age=86400"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(css|js|png)",
+        "headers": [
+          {
+            "key": "Cache-Tag",
+            "value": "website"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "max-age=86400"
+          }
+        ]
+      },
+      {
+        "source": "/",
+        "headers": [
+          {
+            "key": "Cache-Tag",
+            "value": "website"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "max-age=86400"
+          }
+        ]
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
