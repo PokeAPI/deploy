@@ -6,7 +6,7 @@
     "public": "public",
     "headers": [
       {
-        "regex": "https://(staging\\.)?pokeapi.co/.*routeInfo.json",
+        "source": "**/*routeInfo.json",
         "headers": [
           {
             "key": "Cache-Tag",
