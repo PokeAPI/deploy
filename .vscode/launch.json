@@ -5,7 +5,8 @@
         "type": "node",
         "request": "attach",
         "name": "deploy function debugger",
-        "port": 9229
+        "port": 9229,
+        "skipFiles": ["<node_internals>/**"]
     }
   ]
 }
