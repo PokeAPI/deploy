@@ -5,6 +5,8 @@ const express = require("express")
 const functions = require("firebase-functions/v1")
 
 const config = functions.config()
+const endpoints = ["ability","berry","berry-firmness","berry-flavor","characteristic","contest-effect","contest-type","egg-group","encounter-condition","encounter-condition-value","encounter-method","evolution-chain","evolution-trigger","gender","generation","growth-rate","item","item-attribute","item-category","item-fling-effect","item-pocket","language","location","location-area","machine","move","move-ailment","move-battle-style","move-category","move-damage-class","move-learn-method","move-target","nature","pal-park-area","pokeathlon-stat","pokedex","pokemon","pokemon-color","pokemon-form","pokemon-habitat","pokemon-shape","pokemon-species","region","stat","super-contest-effect","type","version","version-group"]
+const resources_r=/^[\w\d-_]+$/
 let BASE_URL = "https://pokeapi.co"
 
 if (process.env.FIREBASE_DEBUG_MODE) {
@@ -90,15 +92,32 @@ function handleErrors(reason, req, res) {
     }
 }
 
+function fetchAndReply(req, res, paginated=false) {
+    const params = paramsOrDefault(req.query)
+    got(targetUrlForPath(req.path), gotConfig)
+    .json()
+    .then(json => {
+        res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
+        if (! paginated) {
+            res.send(json)
+        } else {
+            res.send(
+                Object.assign(json, {
+                    next: getPageUrl(req.path, getNextPage(params, json.count)),
+                    previous: getPageUrl(req.path, getPreviousPage(params)),
+                    results: json.results.slice(params.offset, params.offset + params.limit)
+                })
+            )
+        }
+    })
+    .catch(reason => {
+        handleErrors(reason, req, res)
+    })
+}
 
 const api = express()
-
-api.use(compression())
-api.use(cors())
-
 const successTtl = 86400 // 1 day
 const failTtl = 432000 // 5 days
-
 const gotConfig = {
     timeout: 8000,
     retry: {
@@ -114,39 +133,37 @@ const gotConfig = {
     }
 }
 
+api.use(compression())
+api.use(cors())
+
 api.get([
-    "/api/v2/",
+    "/api/v2/"
+], (req, res) => {
+    fetchAndReply(req, res)
+})
+
+api.get([
     "/api/v2/:endpoint/:id/",
     "/api/v2/:endpoint/:id/:extra/"
 ], (req, res) => {
-    got(targetUrlForPath(req.path), gotConfig)
-    .json()
-    .then(json => {
-        res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
-        res.send(json)
-    })
-    .catch(reason => {
-        handleErrors(reason, req, res)
-    })
+    if (req.params.extra === undefined || req.params.extra === 'encounters') {
+        if (endpoints.includes(req.params.endpoint) && req.params.id.match(resources_r)) {
+            fetchAndReply(req, res)
+        } else {
+            res.sendStatus(400)
+        }
+    } else {
+        res.sendStatus(400)
+    }
 })
 
 api.get("/api/v2/:endpoint/", (req, res) => {
-    got(targetUrlForPath(req.path), gotConfig)
-    .json()
-    .then(json => {
-        const params = paramsOrDefault(req.query)
-        res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
-        res.send(
-            Object.assign(json, {
-                next: getPageUrl(req.path, getNextPage(params, json.count)),
-                previous: getPageUrl(req.path, getPreviousPage(params)),
-                results: json.results.slice(params.offset, params.offset + params.limit)
-            })
-        )
-    })
-    .catch(reason => {
-        handleErrors(reason, req, res)
-    })
+    if (endpoints.includes(req.params.endpoint)) {
+        fetchAndReply(req, res, true)
+    } else {
+        res.sendStatus(400)
+    }
+
 })
 
 exports.api_v1functions = functions.runWith({

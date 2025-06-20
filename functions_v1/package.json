@@ -1,7 +1,7 @@
 {
   "name": "functions",
   "scripts": {
-    "emulator": "firebase emulators:start --project pokeapi-215911",
+    "emulator": "firebase emulators:start --project pokeapi-215911 --inspect-functions",
     "serve": "firebase serve",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
