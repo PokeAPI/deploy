@@ -13,7 +13,7 @@
     "node": "20"
   },
   "dependencies": {
-    "compression": "^1.7.5",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "firebase-admin": "~13.2.0",
