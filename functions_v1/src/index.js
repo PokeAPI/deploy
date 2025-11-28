@@ -3,17 +3,12 @@ const compression = require("compression")
 const cors = require("cors")
 const express = require("express")
 const functions = require("firebase-functions/v1")
-
-const config = functions.config()
+const { defineString } = require('firebase-functions/params');
+const NETWORK_BASE_URL = defineString('NETWORK_BASE_URL');
 const endpoints = ["ability","berry","berry-firmness","berry-flavor","characteristic","contest-effect","contest-type","egg-group","encounter-condition","encounter-condition-value","encounter-method","evolution-chain","evolution-trigger","gender","generation","growth-rate","item","item-attribute","item-category","item-fling-effect","item-pocket","language","location","location-area","machine","move","move-ailment","move-battle-style","move-category","move-damage-class","move-learn-method","move-target","nature","pal-park-area","pokeathlon-stat","pokedex","pokemon","pokemon-color","pokemon-form","pokemon-habitat","pokemon-shape","pokemon-species","region","stat","super-contest-effect","type","version","version-group"]
 const resources_r=/^[\w\d-_]+$/
-let BASE_URL = "https://pokeapi.co"
 
-if (process.env.FIREBASE_DEBUG_MODE) {
-    BASE_URL = "http://localhost:5000"
-} else if (config.network && config.network.base_url) {
-    BASE_URL = config.network.base_url // To retrieve the config run: `firebase functions:config:get --project <PROJECT_ID>`
-}
+let BASE_URL = NETWORK_BASE_URL.value()
 
 function targetUrlForPath(path) {
     let target = BASE_URL + "/_gen" + path.toLowerCase()
