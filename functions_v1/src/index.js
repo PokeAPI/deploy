@@ -75,7 +75,6 @@ function getNextPage(params, count) {
 }
 
 function handleErrors(reason, req, res) {
-    //console.log(reason)
     if (reason.response && reason.response.statusCode) {
         res.set('Cache-Control', `public, max-age=${failTtl}, s-maxage=${failTtl}`)
         res.sendStatus(reason.response.statusCode)
