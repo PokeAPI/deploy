@@ -75,6 +75,7 @@ function getNextPage(params, count) {
 }
 
 function handleErrors(reason, req, res) {
+    //console.log(reason)
     if (reason.response && reason.response.statusCode) {
         res.set('Cache-Control', `public, max-age=${failTtl}, s-maxage=${failTtl}`)
         res.sendStatus(reason.response.statusCode)
@@ -87,15 +88,13 @@ function handleErrors(reason, req, res) {
     }
 }
 
-function fetchAndReply(req, res, paginated=false) {
+function fetchAndReply(req, res) {
     const params = paramsOrDefault(req.query)
     got(targetUrlForPath(req.path), gotConfig)
     .json()
     .then(json => {
         res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
-        if (! paginated) {
-            res.send(json)
-        } else {
+        if ('count' in json && 'results' in json && 'next' in json && 'previous' in json) {
             res.send(
                 Object.assign(json, {
                     next: getPageUrl(req.path, getNextPage(params, json.count)),
@@ -103,6 +102,8 @@ function fetchAndReply(req, res, paginated=false) {
                     results: json.results.slice(params.offset, params.offset + params.limit)
                 })
             )
+        } else {
+            res.send(json)
         }
     })
     .catch(reason => {
@@ -154,11 +155,10 @@ api.get([
 
 api.get("/api/v2/:endpoint/", (req, res) => {
     if (endpoints.includes(req.params.endpoint)) {
-        fetchAndReply(req, res, true)
+        fetchAndReply(req, res)
     } else {
         res.sendStatus(400)
     }
-
 })
 
 exports.api_v1functions = functions.runWith({
