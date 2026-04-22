@@ -60,7 +60,7 @@ workflows:
       - build
       - deploy:
           context:
-            - pokeapi_staging
+            - pokeapi_<< pipeline.parameters.deploy_location >>
           requires:
             - build
           filters:
