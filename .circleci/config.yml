@@ -59,6 +59,8 @@ workflows:
     jobs:
       - build
       - deploy:
+          context:
+            - pokeapi_<< pipeline.parameters.deploy_location >>
           requires:
             - build
           filters:
