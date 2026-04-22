@@ -4,6 +4,7 @@
 # Deploys both pokeapi.co and api-data to Firebase in the respective project
 # $GCP_SA, $FIREBASE_PROJECT_ID, $GCP_SA_STAGING, $FIREBASE_PROJECT_ID_STAGING are present in CircleCI
 # $deploy_location is an environment variable set when the job is triggered by one of the two repositories getting pushed. If not present then the deploy was triggered by a commit on the master or staging branch of this very repository.
+# $deploy_date and $hash are environment variables set by the api-data build job and passed to this deploy job via CircleCI contexts
 
 export GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcp_sa.json # This SA needs Editor role. Firebase Admin isn't necessary. The
 
@@ -37,5 +38,12 @@ tar xzf static_website.tar.gz -C public
 
 # Deploy to Firebase
 (cd functions_v1 && npm ci)
-# (cd functions_v2 && npm ci) # Not used due to high costs. Only when v1 will be removed, switch to v2
+# (cd functions_v2 && npm ci) # Not used due to high costs. Only when v1 will be removed switch to v2
+{
+    echo ""
+    # shellcheck disable=SC2154
+    echo "POKEAPI_VERSION_HASH=$hash"
+    # shellcheck disable=SC2154
+    echo "POKEAPI_VERSION_DEPLOY_DATE=$deploy_date"
+} >> "functions_v1/.env.$PROJECT"
 functions_v1/node_modules/.bin/firebase deploy --project="${PROJECT}" --only functions:api_v1functions,hosting
