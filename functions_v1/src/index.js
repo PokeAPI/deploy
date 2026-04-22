@@ -87,7 +87,7 @@ function handleErrors(reason, req, res) {
     }
 }
 
-function fetchAndReply(req, res, paginated=false) {
+function fetchAndReply(req, res) {
     const params = paramsOrDefault(req.query)
     got(targetUrlForPath(req.path), gotConfig)
     .json()
@@ -105,6 +105,8 @@ function fetchAndReply(req, res, paginated=false) {
                     results: json.results.slice(params.offset, params.offset + params.limit)
                 })
             )
+        } else {
+            res.send(json)
         }
     })
     .catch(reason => {
@@ -156,11 +158,10 @@ api.get([
 
 api.get("/api/v2/:endpoint/", (req, res) => {
     if (endpoints.includes(req.params.endpoint)) {
-        fetchAndReply(req, res, true)
+        fetchAndReply(req, res)
     } else {
         res.sendStatus(400)
     }
-
 })
 
 exports.api_v1functions = functions.runWith({

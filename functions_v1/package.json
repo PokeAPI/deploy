@@ -16,13 +16,13 @@
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "firebase-admin": "~13.6.1",
-    "firebase-functions": "^7.0.5",
+    "firebase-admin": "~13.7.0",
+    "firebase-functions": "^7.1.1",
     "got": "^11.8.6",
     "http-status-codes": "^2.3.0"
   },
   "devDependencies": {
-    "firebase-tools": "^15.7.0"
+    "firebase-tools": "^15.10.0"
   },
   "private": true
 }
