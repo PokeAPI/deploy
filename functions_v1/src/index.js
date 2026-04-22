@@ -95,9 +95,7 @@ function fetchAndReply(req, res) {
         res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
         res.set("X-PokeAPI-Hash", POKEAPI_VERSION_HASH);
         res.set("X-PokeAPI-Deploy-Date", POKEAPI_VERSION_DEPLOY_DATE);
-        if (! paginated) {
-            res.send(json)
-        } else {
+        if ('count' in json && 'results' in json && 'next' in json && 'previous' in json) {
             res.send(
                 Object.assign(json, {
                     next: getPageUrl(req.path, getNextPage(params, json.count)),
