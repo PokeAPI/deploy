@@ -61,7 +61,6 @@ workflows:
       - deploy:
           context:
             - pokeapi_staging
-            - pokeapi_master
           requires:
             - build
           filters:
