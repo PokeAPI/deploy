@@ -131,7 +131,11 @@ const gotConfig = {
 }
 
 api.use(compression())
-api.use(cors())
+api.use(cors({
+    origin: '*',
+    methods: ['GET', 'HEAD'],
+    exposedHeaders: ['X-PokeAPI-Hash', 'X-PokeAPI-Deploy-Date'],
+}))
 
 api.get([
     "/api/v2/"
