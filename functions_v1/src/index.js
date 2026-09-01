@@ -93,7 +93,6 @@ function fetchAndReply(req, res) {
     .json()
     .then(json => {
         res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
-        res.set("Cache-Tag", 'api_v2'); // Cloudflare tag
         res.set("X-PokeAPI-Hash", POKEAPI_VERSION_HASH);
         res.set("X-PokeAPI-Deploy-Date", POKEAPI_VERSION_DEPLOY_DATE);
         if ('count' in json && 'results' in json && 'next' in json && 'previous' in json) {

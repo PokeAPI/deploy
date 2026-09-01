@@ -6,6 +6,15 @@
     "public": "public",
     "headers": [
       {
+        "source": "api/v2/**",
+        "headers": [
+          {
+            "key": "Cache-Tag",
+            "value": "api_v2"
+          }
+        ]
+      },
+      {
         "source": "**/*routeInfo.json",
         "headers": [
           {
