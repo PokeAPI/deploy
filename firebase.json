@@ -6,7 +6,7 @@
     "public": "public",
     "headers": [
       {
-        "source": "api/v2/**",
+        "source": "/api/v2/**",
         "headers": [
           {
             "key": "Cache-Tag",
