@@ -40,16 +40,9 @@ jobs:
               -H 'Content-Type: application/json' \
               -H "Authorization: Bearer $CF_POKEAPI_CIRCLECI_CACHE_PURGE_NARAMSIM" \
               -d '{
-                "files": [
-                  "https://pokeapi.co/"
-                ]
-              }'
-            curl https://api.cloudflare.com/client/v4/zones/1b447807502a801bdff3f71052fab25b/purge_cache \
-              -H 'Content-Type: application/json' \
-              -H "Authorization: Bearer $CF_POKEAPI_CIRCLECI_CACHE_PURGE_NARAMSIM" \
-              -d '{
                 "tags": [
-                  "website"
+                  "website",
+                  "api_v2"
                 ]
               }'
 
