@@ -3,12 +3,14 @@ const compression = require("compression")
 const cors = require("cors")
 const express = require("express")
 const functions = require("firebase-functions/v1")
+const createError = require('http-errors');
 const { defineString } = require('firebase-functions/params');
+
 const NETWORK_BASE_URL = defineString('NETWORK_BASE_URL').value();
 const POKEAPI_VERSION_HASH = defineString('POKEAPI_VERSION_HASH').value()
 const POKEAPI_VERSION_DEPLOY_DATE = defineString('POKEAPI_VERSION_DEPLOY_DATE').value()
 const endpoints = ["ability","berry","berry-firmness","berry-flavor","characteristic","contest-effect","contest-type","currency","egg-group","encounter-condition","encounter-condition-value","encounter-method","evolution-chain","evolution-trigger","gender","generation","growth-rate","item","item-attribute","item-category","item-fling-effect","item-pocket","language","location","location-area","machine","meta","move","move-ailment","move-battle-style","move-category","move-damage-class","move-learn-method","move-target","nature","pal-park-area","pokeathlon-stat","pokedex","pokemon","pokemon-color","pokemon-form","pokemon-habitat","pokemon-shape","pokemon-species","region","stat","super-contest-effect","type","version","version-group"]
-const resources_r=/^[\w\d-_]+$/
+const resources_r = /^[\w\d-_]+$/
 
 function targetUrlForPath(path) {
     let target = NETWORK_BASE_URL + "/_gen" + path.toLowerCase()
@@ -74,20 +76,20 @@ function getNextPage(params, count) {
     return null
 }
 
-function handleErrors(reason, req, res) {
+function handleErrors(reason, req, res, next) {
     if (reason.response && reason.response.statusCode) {
         res.set('Cache-Control', `public, max-age=${failTtl}, s-maxage=${failTtl}`)
-        res.sendStatus(reason.response.statusCode)
+        return next(createError(reason.response.statusCode));
     } else if (reason.code === 'ETIMEDOUT') {
         console.error(`504: ${reason.name} for ${req.path}`)
-        res.sendStatus(504)
+        return next(createError(504, "Upstream timed out"));
     } else {
         console.error(`500: ${reason.name} for ${req.path}`)
-        res.sendStatus(500)
+        return next(createError(500));
     }
 }
 
-function fetchAndReply(req, res) {
+function fetchAndReply(req, res, next) {
     const params = paramsOrDefault(req.query)
     got(targetUrlForPath(req.path), gotConfig)
     .json()
@@ -108,7 +110,7 @@ function fetchAndReply(req, res) {
         }
     })
     .catch(reason => {
-        handleErrors(reason, req, res)
+        handleErrors(reason, req, res, next)
     })
 }
 
@@ -139,35 +141,48 @@ api.use(cors({
 
 api.get([
     "/api/v2/"
-], (req, res) => {
-    fetchAndReply(req, res)
+], (req, res, next) => {
+    fetchAndReply(req, res, next)
 })
 
 api.get([
     "/api/v2/:endpoint/:id/",
     "/api/v2/:endpoint/:id/:extra/"
-], (req, res) => {
+], (req, res, next) => {
     if (req.params.extra === undefined || req.params.extra === 'encounters') {
         if (endpoints.includes(req.params.endpoint) && req.params.id.match(resources_r)) {
-            fetchAndReply(req, res)
+            fetchAndReply(req, res, next)
         } else {
-            res.sendStatus(400)
+            return next(createError(400, "Invalid endpoint or resource formatting"));
         }
     } else {
-        res.sendStatus(400)
+        return next(createError(400, "Invalid path"));
     }
 })
 
-api.get("/api/v2/:endpoint/", (req, res) => {
+api.get("/api/v2/:endpoint/", (req, res, next) => {
     if (endpoints.includes(req.params.endpoint)) {
-        fetchAndReply(req, res)
+        fetchAndReply(req, res, next)
     } else {
-        res.sendStatus(400)
+        return next(createError(400, "Invalid endpoint"));
     }
 })
+
+// Centralized JSON Error Handler Middleware
+api.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err);
+    }
+
+    const status = err.status || 500;
+    res.status(status).json({
+        status: status,
+        message: err.message || 'Internal Server Error'
+    });
+});
 
 exports.api_v1functions = functions.runWith({
     maxInstances: 400,
     memory: "128MB",
     timeoutSeconds: 30,
-  }).https.onRequest(api)
+}).https.onRequest(api)
