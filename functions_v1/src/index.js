@@ -170,6 +170,10 @@ api.get("/api/v2/:endpoint/", (req, res, next) => {
 
 // Centralized JSON Error Handler Middleware
 api.use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err);
+    }
+
     const status = err.status || 500;
     res.status(status).json({
         status: status,
