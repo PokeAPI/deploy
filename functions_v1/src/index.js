@@ -141,7 +141,6 @@ api.use(cors({
 
 api.use((req, res, next) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') {
-        res.set('Cache-Control', `public, max-age=${failTtl}, s-maxage=${failTtl}`);
         return next(createError(405, `Method ${req.method} Not Allowed`));
     }
     next();

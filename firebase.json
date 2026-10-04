@@ -11,6 +11,10 @@
           {
             "key": "Cache-Tag",
             "value": "api_v2"
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "HEAD, GET"
           }
         ]
       },
