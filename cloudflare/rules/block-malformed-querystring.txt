@@ -1,0 +1,1 @@
+(http.host eq "pokeapi.co" and starts_with(http.request.uri.path, "/api/v2") and http.request.uri.query ne "" and not (http.request.uri.query wildcard "offset=*" or http.request.uri.query wildcard "limit=*"))
