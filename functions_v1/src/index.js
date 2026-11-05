@@ -140,7 +140,7 @@ api.use(cors({
 }))
 
 api.use((req, res, next) => {
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
+    if (req.method !== 'GET' && req.method !== 'HEAD' && req.method !== 'OPTIONS') {
         return next(createError(405, `Method ${req.method} Not Allowed`));
     }
     next();
