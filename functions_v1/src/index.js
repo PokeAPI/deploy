@@ -137,6 +137,7 @@ api.use(cors({
     origin: '*',
     methods: ['GET', 'HEAD'],
     exposedHeaders: ['X-PokeAPI-Hash', 'X-PokeAPI-Deploy-Date'],
+    maxAge: 86400,
 }))
 
 api.get([
