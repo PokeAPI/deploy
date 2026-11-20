@@ -95,8 +95,6 @@ function fetchAndReply(req, res, next) {
     .json()
     .then(json => {
         res.set('Cache-Control', `public, max-age=${successTtl}, s-maxage=${successTtl}`)
-        res.set("X-PokeAPI-Hash", POKEAPI_VERSION_HASH);
-        res.set("X-PokeAPI-Deploy-Date", POKEAPI_VERSION_DEPLOY_DATE);
         if ('count' in json && 'results' in json && 'next' in json && 'previous' in json) {
             res.send(
                 Object.assign(json, {
@@ -139,6 +137,13 @@ api.use(cors({
     exposedHeaders: ['X-PokeAPI-Hash', 'X-PokeAPI-Deploy-Date'],
     maxAge: 86400,
 }))
+
+api.use((req, res, next) => {
+    res.set('Cache-Tag', 'api_v2');
+    res.set("X-PokeAPI-Deploy-Date", POKEAPI_VERSION_DEPLOY_DATE);
+    res.set("X-PokeAPI-Hash", POKEAPI_VERSION_HASH);
+    next();
+});
 
 api.get([
     "/api/v2/"
